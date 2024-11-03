@@ -7,10 +7,18 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+  # Step 1: Checkout code from Azure DevOps repository
   - checkout: self
     persistCredentials: true
 
+  # Step 2: Set up Git configuration (optional)
   - script: |
-      git remote add github https:slawomirmalyszko:$(GITHUB_TOKEN)@github.com/SMAOrg/ContosoUniversity.git
-      git push github main -f
-    displayName: 'Push to GitHub'
+      git config --global user.name "Azure DevOps"
+    displayName: 'Set Git Config'
+
+  # Step 3: Push commits to GitHub with history
+  - script: |
+      git remote add github https://$(GITHUB_USERNAME):$(GITHUB_TOKEN)@$(GITHUB_REPO)
+      git push github --all
+    displayName: 'Push to GitHub with commit history'
+
