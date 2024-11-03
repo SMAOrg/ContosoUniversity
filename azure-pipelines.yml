@@ -1,0 +1,16 @@
+trigger:
+  branches:
+    include:
+      - main  # or any branch you want to sync
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - checkout: self
+    persistCredentials: true
+
+  - script: |
+      git remote add github https:slawomirmalyszko:$(GITHUB_TOKEN)@github.com/SMAOrg/ContosoUniversity.git
+      git push github main -f
+    displayName: 'Push to GitHub'
