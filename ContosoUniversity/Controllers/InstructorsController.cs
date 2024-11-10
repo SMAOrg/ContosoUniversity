@@ -91,7 +91,7 @@ namespace ContosoUniversity.Controllers
                     instructor.CourseAssignments.Add(courseToAdd);
                 }
             }
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 _context.Add(instructor);
                 await _context.SaveChangesAsync();
@@ -144,7 +144,11 @@ private void PopulateAssignedCourseData(Instructor instructor)
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, string[] selectedCourses)
+        public async Task<IActionResult> Edit(int? id, string[] selectedCourses,
+            [FromForm] string firstMidName,
+            [FromForm] string lastName,
+            [FromForm] DateTime hireDate,
+            [FromForm] OfficeAssignment officeAssignment)
         {
             if (id == null)
             {
@@ -157,10 +161,10 @@ private void PopulateAssignedCourseData(Instructor instructor)
                     .ThenInclude(i => i.Course)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (await TryUpdateModelAsync<Instructor>(
-                instructorToUpdate,
-                "",
-                i => i.FirstMidName, i => i.LastName, i => i.HireDate, i => i.OfficeAssignment))
+            //if (await TryUpdateModelAsync<Instructor>(
+            //    instructorToUpdate,
+            //    "",
+            //    i => i.FirstMidName, i => i.LastName, i => i.HireDate, i => i.OfficeAssignment))
             {
                 if (String.IsNullOrWhiteSpace(instructorToUpdate.OfficeAssignment?.Location))
                 {
@@ -169,6 +173,11 @@ private void PopulateAssignedCourseData(Instructor instructor)
                 UpdateInstructorCourses(selectedCourses, instructorToUpdate);
                 try
                 {
+                    instructorToUpdate.OfficeAssignment.Location = officeAssignment.Location;
+                    instructorToUpdate.FirstMidName = firstMidName;
+                    instructorToUpdate.LastName = lastName;
+                    instructorToUpdate.HireDate = hireDate;
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateException /* ex */)

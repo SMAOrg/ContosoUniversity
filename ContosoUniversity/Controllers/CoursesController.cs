@@ -62,7 +62,7 @@ namespace ContosoUniversity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CourseID,Credits,DepartmentID,Title")] Course course)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 _context.Add(course);
                 await _context.SaveChangesAsync();
@@ -103,7 +103,7 @@ namespace ContosoUniversity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
+        public async Task<IActionResult> EditPost(int? id, [FromForm] string title, [FromForm] int credits, [FromForm] int departmentID)
         {
             if (id == null)
             {
@@ -113,12 +113,15 @@ namespace ContosoUniversity.Controllers
             var courseToUpdate = await _context.Courses
                 .FirstOrDefaultAsync(c => c.CourseID == id);
 
-            if (await TryUpdateModelAsync<Course>(courseToUpdate,
-                "",
-                c => c.Credits, c => c.DepartmentID, c => c.Title))
+            //if (await TryUpdateModelAsync<Course>(courseToUpdate,
+            //    "",
+            //    c => c.Credits, c => c.DepartmentID, c => c.Title))
             {
                 try
                 {
+                    courseToUpdate.Title = title;// Request.Form["Title"];
+                    courseToUpdate.Credits = credits; // int.Parse(Request.Form["Credits"]);
+                    courseToUpdate.DepartmentID = departmentID;// int.Parse(Request.Form["DepartmentID"]);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateException /* ex */)
