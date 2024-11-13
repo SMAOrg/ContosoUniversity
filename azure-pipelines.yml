@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - main  # or any branch you want to sync
+      - "*"  # or any branch you want to sync
 
 pool:
   vmImage: 'ubuntu-latest'
