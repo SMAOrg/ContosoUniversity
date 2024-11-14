@@ -1,3 +1,15 @@
+
+trigger:
+  branches:
+    include:
+      - "master"  # or any branch you want to sync
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: ContosoUniversity  # This links the variable group to the pipeline
+
 steps:
   # Step 1: Checkout code from Azure DevOps repository
   - checkout: self
