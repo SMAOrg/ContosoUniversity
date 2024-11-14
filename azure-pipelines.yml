@@ -1,11 +1,3 @@
-trigger:
-  branches:
-    include:
-      - "*"  # or any branch you want to sync
-
-pool:
-  vmImage: 'ubuntu-latest'
-
 steps:
   # Step 1: Checkout code from Azure DevOps repository
   - checkout: self
@@ -13,12 +5,20 @@ steps:
 
   # Step 2: Set up Git configuration (optional)
   - script: |
-      git config --global user.name "Azure DevOps"
+      git config --global user.name "slawomirmalyszko"
+      git config --global user.email "okok@gmail.com"  
     displayName: 'Set Git Config'
 
-  # Step 3: Push commits to GitHub with history
   - script: |
-      git remote add github https://$(GITHUB_USERNAME):$(GITHUB_TOKEN)@$(GITHUB_REPO)
-      git push github --all
+      set -x  # Enable verbose logging
+      git remote add github https://$(GITHUB_USERNAME):$(GITHUB_TOKEN)@github.com/$(GITHUB_REPO)
+      git fetch origin  # Fetch latest changes from Azure DevOps (origin)
+
+      # Make sure we're on the correct branch (master or main as appropriate for DevOps)
+      git checkout master || git checkout -b master  # Checkout master branch from DevOps, create if it doesn't exist
+      git status  # Check the current status of the repo
+      git log --oneline -5  # Show last 5 commits to verify if there are new commits to push
+
+      git push github --all --force
     displayName: 'Push to GitHub with commit history'
 
